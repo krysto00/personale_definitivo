@@ -13,15 +13,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
 import static it.uniroma3.siw.model.Credentials.ADMIN_ROLE;
-
 import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
-	public class AuthConfiguration {
-
+public class AuthConfiguration {
     @Autowired
     private DataSource dataSource;
 
@@ -38,25 +35,26 @@ import javax.sql.DataSource;
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
-
+    
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
         return authenticationConfiguration.getAuthenticationManager();
     }
-
+    
     @Bean
     protected SecurityFilterChain configure(final HttpSecurity httpSecurity) throws Exception{
         httpSecurity
                 .csrf().and().cors().disable()
                 .authorizeHttpRequests()
-//                .requestMatchers("/**").permitAll()
+                // AGGIUNTO: Permetti accesso a /error per evitare loop infiniti
+                .requestMatchers("/error", "/error/**").permitAll()
                 // chiunque (autenticato o no) può accedere alle pagine index, login, register, ai css e alle immagini
-                .requestMatchers(HttpMethod.GET,"/","/index","/register","/css/**", "/images/**", "/ristoranti","/chefs","/ristorante/{id}", "/chef/{id}","/search","/searchResults**").permitAll()
-        		// chiunque (autenticato o no) può mandare richieste POST al punto di accesso per login e register 
+                .requestMatchers(HttpMethod.GET,"/","/index","/register","/css/**", "/images/**", "/js/**", "/palestre","/trainers","/palestra/{id}", "/trainer/{id}","/search","/searchResults**").permitAll()
+                // chiunque (autenticato o no) può mandare richieste POST al punto di accesso per login e register 
                 .requestMatchers(HttpMethod.POST,"/register", "/login").permitAll()
                 .requestMatchers(HttpMethod.GET,"/admin/**").hasAnyAuthority(ADMIN_ROLE)
                 .requestMatchers(HttpMethod.POST,"/admin/**").hasAnyAuthority(ADMIN_ROLE)
-        		// tutti gli utenti autenticati possono accere alle pagine rimanenti 
+                // tutti gli utenti autenticati possono accere alle pagine rimanenti 
                 .anyRequest().authenticated()
                 // LOGIN: qui definiamo il login
                 .and().formLogin()
