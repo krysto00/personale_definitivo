@@ -49,7 +49,7 @@ public class AuthConfiguration {
                 // AGGIUNTO: Permetti accesso a /error per evitare loop infiniti
                 .requestMatchers("/error", "/error/**").permitAll()
                 // chiunque (autenticato o no) può accedere alle pagine index, login, register, ai css e alle immagini
-                .requestMatchers(HttpMethod.GET,"/","/index","/register","/css/**", "/images/**", "/js/**", "/palestre","/trainers","/palestra/{id}", "/trainer/{id}","/search","/searchResults**").permitAll()
+                .requestMatchers(HttpMethod.GET,"/","/index","/register","/css/**", "/images/**", "/js/**", "/palestre","/personalTrainers","/palestra/{id}", "/personalTrainer/{id}","/search","/searchResults**").permitAll()
                 // chiunque (autenticato o no) può mandare richieste POST al punto di accesso per login e register 
                 .requestMatchers(HttpMethod.POST,"/register", "/login").permitAll()
                 .requestMatchers(HttpMethod.GET,"/admin/**").hasAnyAuthority(ADMIN_ROLE)
