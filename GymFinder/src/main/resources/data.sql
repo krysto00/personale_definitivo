@@ -31,7 +31,7 @@ INSERT INTO users (id, name, surname) VALUES
 
 -- Inserimento Credentials
 INSERT INTO credentials (id, username, password, role, user_id) VALUES
-(1, 'admin', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a', 'ADMIN', 1),
+(1, 'admin', '$2b$12$0Wtkrr30sTRncddhmXOlNuUTVZeDJ3M6NBi3rJORc3J/4PY8FCUsq', 'ADMIN', 1),
 (2, 'mrossi', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a', 'DEFAULT', 2),
 (3, 'gverdi', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a', 'DEFAULT', 3),
 (4, 'lbianchi', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a', 'DEFAULT', 4),

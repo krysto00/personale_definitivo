@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import it.uniroma3.siw.model.PersonalTrainer;
 import it.uniroma3.siw.repository.PersonalTrainerRepository;
@@ -35,15 +36,21 @@ public class PersonalTrainerService {
 		
 	}
 
+	@Transactional
 	public void deletePersonalTrainer(Long id) {
-		personalTrainerRepository.deleteById(id);
-		
+	    // Prima rimuovi tutte le associazioni dalla tabella di join
+	    personalTrainerRepository.removePersonalTrainerAssociations(id);
+	    
+	    // Poi elimina il personal trainer
+	    personalTrainerRepository.deleteById(id);
 	}
 
-	public List<PersonalTrainer> findByNomeOrCognomeOrOrigine(String parola) {
+	public List<PersonalTrainer> findByNomeOrCognome(String parola) {
 		// TODO Auto-generated method stub
 		return this.personalTrainerRepository.findByNomeIgnoreCaseContainingOrCognomeIgnoreCaseContaining(parola, parola);
 	}
+	
+	
 	
 
 }

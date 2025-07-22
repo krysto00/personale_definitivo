@@ -1,13 +1,11 @@
 <div th:fragment="header">
     <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: #a94438;">
         <div class="container">
-			<a class="navbar-brand fw-bold fs-3" href="/">
-			                GymFinder
-			            </a>
+            <a class="navbar-brand fw-bold fs-3" href="/">GymFinder</a>
 
             <!-- Toggle -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
@@ -17,12 +15,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/"><i class="fas fa-home me-1"></i>Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/palestre"><i class="fas fa-store me-1"></i>Palestre</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/pt"><i class="fas fa-user-chef me-1"></i>Personal Trainer</a>
-                    </li>
                 </ul>
 
                 <!-- Search -->
@@ -30,36 +22,50 @@
                     <div class="input-group">
                         <input type="text" name="parola" class="form-control" placeholder="Cerca palestre, PT...">
                         <button type="submit" class="btn text-dark fw-bold"
-                                style="background-color: #d4a437; border: none;">
+                            style="background-color: #d4a437; border: none;">
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
                 </form>
 
-                <!-- User -->
+                <!-- User Section -->
                 <div class="d-flex align-items-center">
-                    <div th:if="${userDetails}" class="d-flex align-items-center gap-2">
+                    <!-- Sezione per utenti autenticati -->
+                    <div sec:authorize="isAuthenticated()" class="d-flex align-items-center gap-2">
                         <div class="dropdown">
                             <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center gap-2"
-                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-user-circle"></i>
-                                <span th:text="${userDetails.username}" class="d-none d-md-inline">Username</span>
+                                <span sec:authentication="name" class="d-none d-md-inline">Username</span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a th:href="@{/profilo}" class="dropdown-item"><i class="fas fa-user me-2"></i>Il mio Profilo</a></li>
+                                <li>
+                                    <a th:href="@{/profilo}" class="dropdown-item">
+                                        <i class="fas fa-user me-2"></i>Il mio Profilo
+                                    </a>
+                                </li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a href="/logout" class="dropdown-item text-danger"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                                <li>
+                                    <form th:action="@{/logout}" method="post" class="m-0">
+                                        <button type="submit" class="dropdown-item text-danger w-100 border-0 bg-transparent text-start">
+                                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                        </button>
+                                    </form>
+                                </li>
                             </ul>
                         </div>
                     </div>
 
-                    <div th:unless="${userDetails}" class="d-flex align-items-center gap-2">
+                    <!-- Sezione per utenti NON autenticati -->
+                    <div sec:authorize="!isAuthenticated()" class="d-flex align-items-center gap-2">
                         <a href="/login" class="btn btn-outline-light">
-                            <i class="fas fa-sign-in-alt me-1"></i><span class="d-none d-md-inline">Accedi</span>
+                            <i class="fas fa-sign-in-alt me-1"></i>
+                            <span class="d-none d-md-inline">Accedi</span>
                         </a>
                         <a href="/register" class="btn text-dark fw-bold"
-                           style="background-color: #d4a437; border: none;">
-                            <i class="fas fa-user-plus me-1"></i><span class="d-none d-md-inline">Registrati</span>
+                            style="background-color: #d4a437; border: none;">
+                            <i class="fas fa-user-plus me-1"></i>
+                            <span class="d-none d-md-inline">Registrati</span>
                         </a>
                     </div>
                 </div>

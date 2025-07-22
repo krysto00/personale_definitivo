@@ -39,6 +39,25 @@ public class AuthenticationController {
 		model.addAttribute("credentials", new Credentials());
 		return "formRegisterUser";
 	}
+    
+    @PostMapping(value = { "/register" })
+    public String registerUser(@Valid @ModelAttribute("user") User user,
+                               BindingResult userBindingResult,
+                               @Valid @ModelAttribute("credentials") Credentials credentials,
+                               BindingResult credentialsBindingResult,
+                               Model model) {
+
+        if (!userBindingResult.hasErrors() && !credentialsBindingResult.hasErrors()) {
+            userService.saveUser(user);
+            credentials.setUser(user);
+            credentialsService.saveCredentials(credentials);
+            return "redirect:/";
+        }
+
+        // Se ci sono errori, torna al form di registrazione
+        return "formRegisterUser";
+    }
+
 	
 	@GetMapping(value = "/login") 
 	public String showLoginForm (Model model) {
