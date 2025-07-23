@@ -1,10 +1,13 @@
 package it.uniroma3.siw.controller;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import it.uniroma3.siw.model.ImageEntity;
 import it.uniroma3.siw.model.Palestra;
+import it.uniroma3.siw.model.PersonalTrainer;
 import it.uniroma3.siw.service.ImageEntityService;
 import it.uniroma3.siw.service.PalestraService;
 import it.uniroma3.siw.service.PersonalTrainerService;
@@ -33,20 +37,21 @@ public class PalestraController {
 	@Autowired
 	private ImageEntityService imageEntityService;
 	
-	//lista palestre
 	@GetMapping("/palestre")
 	public String mostraPalestre(Model model) {
 		model.addAttribute("palestre", palestraService.findAll());
 		return "palestre";	
 	}
 	
-	//dettagli palestre
 	@GetMapping("/palestra/{id}")
-	public String mostraPalestra(@PathVariable("id") Long id,Model model) {
-		model.addAttribute("palestra", palestraService.findById(id));
-		return "palestra";
+	public String mostraPalestra(@PathVariable("id") Long id, 
+	                             Model model,
+	                             @AuthenticationPrincipal UserDetails userDetails) {
+	    model.addAttribute("palestra", palestraService.findById(id));
+	    model.addAttribute("userDetails", userDetails); // <-- qui passi l'utente loggato
+	    return "palestra";
 	}
-	
+
 	@GetMapping(value="/admin/indexPalestra")
 	public String mostraIndexPalestra(Model model) {
 		model.addAttribute("palestre", palestraService.findAll());
@@ -69,7 +74,6 @@ public class PalestraController {
 	@PostMapping(value="/admin/formNewPalestra")
 	public String salvaPalestra(@Valid @ModelAttribute("palestra") Palestra palestra, BindingResult bindingResult, 
 			@RequestParam("imageFiles") MultipartFile[] imageFiles, Model model) {
-		//controllo errori
 		if(bindingResult.hasErrors()) {
 			return "admin/formNewPalestra";
 		}
@@ -123,5 +127,24 @@ public class PalestraController {
 		palestraService.deletePalestra(id);
 		return "redirect:/palestre";
 		
+	}
+	@GetMapping(value="/admin/formAddPTToPalestra/{id}")
+	public String formAddPersonalTrainerTo(@PathVariable("id") Long id, Model model) {
+		model.addAttribute("palestra", palestraService.findById(id));
+		model.addAttribute("personalTrainers", personalTrainerService.findAll());
+		return "admin/formAddPTToPalestra";
+	}
+
+	@PostMapping(value="/admin/AddPTToPalestra/{id}")
+	public String salvaPTToPalestra(@PathVariable("id") Long id,
+		@RequestParam Set<Long> personalTrainer_id) {
+		Palestra palestra=palestraService.findById(id);
+		Iterable<PersonalTrainer> PersonalTrainerToAdd=personalTrainerService.findById(personalTrainer_id);
+		List<PersonalTrainer> personalTrainers=palestra.getPersonalTrainers();
+		for(PersonalTrainer c : PersonalTrainerToAdd) {
+			personalTrainers.add(c);
+		}
+		palestraService.save(palestra);
+		return "redirect:/palestra/"+id;  
 	}
 }

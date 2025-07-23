@@ -21,7 +21,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // Visualizza il profilo utente
     @GetMapping("/profilo")
     public String mostraProfilo(Model model, @AuthenticationPrincipal UserDetails currentUser) {
         Credentials credentials = credentialsService.getCredentials(currentUser.getUsername());
@@ -33,7 +32,6 @@ public class UserController {
         return "user/profilo";
     }
     
- // Form per modificare profilo
     @GetMapping("/profilo/modificaProfilo")
     public String formModificaProfilo(Model model, @AuthenticationPrincipal UserDetails currentUser) {
         Credentials credentials = credentialsService.getCredentials(currentUser.getUsername());
@@ -44,7 +42,6 @@ public class UserController {
         return "user/modificaProfilo";
     }
 
-    // Salva i dati modificati
     @PostMapping("/profilo/modificaProfilo")
     public String salvaModificheProfilo(@ModelAttribute("user") User updatedUser,
                                         @AuthenticationPrincipal UserDetails currentUser) {
@@ -61,6 +58,4 @@ public class UserController {
 
         return "redirect:/profilo";
     }
-
-
 }

@@ -38,10 +38,8 @@ public class PersonalTrainerService {
 
 	@Transactional
 	public void deletePersonalTrainer(Long id) {
-	    // Prima rimuovi tutte le associazioni dalla tabella di join
 	    personalTrainerRepository.removePersonalTrainerAssociations(id);
 	    
-	    // Poi elimina il personal trainer
 	    personalTrainerRepository.deleteById(id);
 	}
 

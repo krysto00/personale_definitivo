@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Aggiungi Personal Trainer alla palestra</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+	<link rel="stylesheet" th:href="@{/css/GymFinder-style.css}">
+</head>
+<body class="bg-light">
+
+<!-- Header -->
+<div th:replace="fragments/header :: header"></div>
+
+<div class="container mt-5 mb-5">
+    <h1 class="text-center text-dark fw-bold mb-4">
+        <i class="fas fa-user-plus text-warning me-2"></i>
+        Aggiungi Personal Trainer alla palestra: <span th:text="${palestra.nome}">Nome Palestra</span>
+    </h1>
+    <div class="hero-divider mx-auto mb-4"></div>
+
+    <form th:action="@{'/admin/AddPTToPalestra/' + ${palestra.id}}" method="post" class="mx-auto" style="max-width: 600px;">
+        <div class="mb-3">
+            <label for="personalTrainers" class="form-label">Seleziona personal trainer da aggiungere:</label>
+			<select id="personalTrainers" name="personalTrainer_id[]" multiple size="10" class="form-select">
+                <option th:each="pt : ${personalTrainers}" 
+                        th:value="${pt.id}" 
+                        th:text="${pt.nome + ' ' + pt.cognome}">
+                </option>
+            </select>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-outline-primary">
+                <i class="fas fa-plus me-1"></i>Aggiungi Personal Trainer
+            </button>
+        </div>
+    </form>
+
+    <div class="text-center mt-4">
+        <a th:href="@{/admin/dettagliPalestra/{id}(id=${palestra.id})}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Torna ai dettagli della palestra
+        </a>
+    </div>
+</div>
+
+<!-- Footer -->
+<div th:replace="fragments/footer :: footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

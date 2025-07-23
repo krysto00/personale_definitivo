@@ -24,9 +24,6 @@ import jakarta.validation.Valid;
 public class AuthenticationController {
 	
 	@Autowired
-	private PalestraService palestraService;
-	
-	@Autowired
 	private CredentialsService credentialsService;
 
     @Autowired
@@ -53,8 +50,6 @@ public class AuthenticationController {
             credentialsService.saveCredentials(credentials);
             return "redirect:/";
         }
-
-        // Se ci sono errori, torna al form di registrazione
         return "formRegisterUser";
     }
 
@@ -82,8 +77,7 @@ public class AuthenticationController {
 	}
 		
     @GetMapping(value = "/success")
-    public String defaultAfterLogin(Model model) {
-        
+    public String defaultAfterLogin(Model model) {    
     	UserDetails userDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	Credentials credentials = credentialsService.getCredentials(userDetails.getUsername());
     	model.addAttribute("credentials", credentials);
@@ -92,6 +86,4 @@ public class AuthenticationController {
         }
         return "index.html";
     }
-
-
 }

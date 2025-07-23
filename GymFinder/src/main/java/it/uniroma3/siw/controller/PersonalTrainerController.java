@@ -57,30 +57,36 @@ public class PersonalTrainerController {
 		model.addAttribute("palestre", palestraService.findAll());
 		return "admin/formNewPersonalTrainer";
 	}
-	//salva il Personal Trainer con foto
+	
 	@PostMapping(value="/admin/formNewPersonalTrainer")
-	public String salvaPersonalTrainer(@Valid @ModelAttribute("personalTrainer") PersonalTrainer personalTrainer, BindingResult bindingResult, @RequestParam("fotoFile") MultipartFile fotoFile, Model model) {
-		if(bindingResult.hasErrors()) {
-			return "admin/formNewPersonalTrainer";
-		}
-		try {
-			if(!fotoFile.isEmpty()) {
-				String name=UUID.randomUUID().toString() + "_" + fotoFile.getOriginalFilename();
-				ImageEntity photo= new ImageEntity(name);
-				this.imageEntityService.savePhysicalImage(fotoFile.getBytes(), name);
-				personalTrainer.setFoto(photo);
-				personalTrainerService.save(personalTrainer);
-				return "redirect:/personalTrainers";
-			}
-			model.addAttribute("personalTrainers", personalTrainerService.findAll());
-			return "admin/formNewPersonalTrainer";
-			
-		} catch(Exception e) {
-			model.addAttribute("msgError", "Errore nel salvataggio del Personal Trainer:\n"+ e.toString());
-            return "admin/formNewPersonalTrainer";
-			
-		}
+	public String salvaPersonalTrainer(
+	        @Valid @ModelAttribute("personalTrainer") PersonalTrainer personalTrainer,
+	        BindingResult bindingResult,
+	        @RequestParam("fotoFile") MultipartFile fotoFile,
+	        Model model) {
+	    
+	    if(bindingResult.hasErrors()) {
+	        return "admin/formNewPersonalTrainer";
+	    }
+
+	    try {
+	        if(!fotoFile.isEmpty()) {
+	            String name = UUID.randomUUID().toString() + "_" + fotoFile.getOriginalFilename();
+	            ImageEntity photo = new ImageEntity(name);
+	            this.imageEntityService.savePhysicalImage(fotoFile.getBytes(), name);
+	            personalTrainer.setFoto(photo);
+	        }
+
+	        personalTrainerService.save(personalTrainer); // salvo sempre, con o senza foto
+
+	        return "redirect:/personalTrainers";  // redirect dopo salvataggio con successo
+
+	    } catch(Exception e) {
+	        model.addAttribute("msgError", "Errore nel salvataggio del Personal Trainer: " + e.toString());
+	        return "admin/formNewPersonalTrainer";
+	    }
 	}
+
 	
 	@GetMapping(value="/admin/formUpdatePersonalTrainer/{id}")
 	public String formUpdatePersonalTrainer(@PathVariable("id") Long id, Model model) {
@@ -89,7 +95,7 @@ public class PersonalTrainerController {
 	}
 	
 	@PostMapping(value="/admin/formUpdatePersonalTrainer/{id}")
-	public String updatePersonalTrainer(@PathVariable("id") Long id,@Valid @ModelAttribute("chef") PersonalTrainer personalTrainer, BindingResult bindingResult, Model model) {
+	public String updatePersonalTrainer(@PathVariable("id") Long id,@Valid @ModelAttribute("personalTrainer") PersonalTrainer personalTrainer, BindingResult bindingResult, Model model) {
 		if(bindingResult.hasErrors()) {
 			return "admin/formUpdatePersonalTrainer";
 		}
